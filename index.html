@@ -77,7 +77,7 @@
 		<nav class="header-nav">
 			<div class="social">
 				
-					<a class="github" target="_blank" href="/github.com/nowmore" title="github"><i class="icon-github"></i></a>
+					<a class="github" target="_blank" href="https://github.com/nowmore" title="github"><i class="icon-github"></i></a>
 		        
 					<a class="weibo" target="_blank" href="#" title="weibo"><i class="icon-weibo"></i></a>
 		        
@@ -118,7 +118,7 @@
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="/github.com/nowmore" title="github"><i class="icon-github"></i></a>
+						<a class="github" target="_blank" href="https://github.com/nowmore" title="github"><i class="icon-github"></i></a>
 			        
 						<a class="weibo" target="_blank" href="#" title="weibo"><i class="icon-weibo"></i></a>
 			        
@@ -151,6 +151,273 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="port-事务隔离级别" class="article article-type-port  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/02/事务隔离级别/">事务隔离级别</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/02/事务隔离级别/" class="archive-article-date">
+  	<time datetime="2020-04-02T14:51:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="事务的基本要素-ACID"><a href="#事务的基本要素-ACID" class="headerlink" title="事务的基本要素(ACID)"></a>事务的基本要素(ACID)</h2><ul>
+<li><p>原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。事务执行过程中出错，会回滚到事务开始前的状态，所有的操作就像没有发生一样。也就是说事务是一个不可分割的整体，就像化学中学过的原子，是物质构成的基本单位。</p>
+</li>
+<li><p>一致性（Consistency）：事务开始前和结束后，数据库的完整性约束没有被破坏 。比如A向B转账，不可能A扣了钱，B却没收到。</p>
+</li>
+<li><p>隔离性（Isolation）：同一时间，只允许一个事务请求同一数据，不同的事务之间彼此没有任何干扰。比如A正在从一张银行卡中取钱，在A取钱的过程结束前，B不能向这张卡转账。</p>
+</li>
+<li><p>持久性（Durability）：事务完成后，事务对数据库的所有更新将被保存到数据库，不能回滚。
+　　 
+　　 </p>
+<h2 id="并发带来的问题"><a href="#并发带来的问题" class="headerlink" title="并发带来的问题"></a>并发带来的问题</h2></li>
+<li><p>脏读：一个事务可以读取另一个尚未提交事务的修改数据。</p>
+</li>
+<li><p>不可重复读：在同一个事务中，同一个查询在T1时间读取某一行，在T2时间重新读取这一行时候，这一行的数据已经发生修改，可能被更新了（update），也可能被删除了（delete）。</p>
+</li>
+<li><p>幻读：在同一事务中，同一查询多次进行时候，由于其他<strong>插入操作insert</strong>的事务提交，导致每次返回不同的结果集。</p>
+</li>
+</ul>
+<p>　　小结：不可重复读的和幻读很容易混淆，不可重复读侧重于修改，幻读侧重于新增或删除。解决不可重复读的问题只需锁住满足条件的行，解决幻读需要锁表
+　　</p>
+<h2 id="mysql事务隔离级别"><a href="#mysql事务隔离级别" class="headerlink" title="mysql事务隔离级别"></a>mysql事务隔离级别</h2><table>
+<thead>
+<tr>
+<th align="center">事务隔离级别</th>
+<th align="center">脏读</th>
+<th align="center">不可重复读</th>
+<th align="center">幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">读未提交（read-uncommitted）</td>
+<td align="center">是</td>
+<td align="center">是</td>
+<td align="center">是</td>
+</tr>
+<tr>
+<td align="center">不可重复读（read-committed）</td>
+<td align="center">否</td>
+<td align="center">是</td>
+<td align="center">是</td>
+</tr>
+<tr>
+<td align="center">==可重复读==（repeatable-read）</td>
+<td align="center">否</td>
+<td align="center">否</td>
+<td align="center">是</td>
+</tr>
+<tr>
+<td align="center">串行化（serializable）</td>
+<td align="center">否</td>
+<td align="center">否</td>
+<td align="center">否</td>
+</tr>
+</tbody></table>
+<p>例子:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `account` (</span><br><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `name` varchar(10) NOT NULL,</span><br><span class="line">  `balance` int(11) NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8</span><br><span class="line"></span><br><span class="line">insert into `account`(`name`, `balance`)</span><br><span class="line">values</span><br><span class="line">(&apos;lilei&apos;, 450),</span><br><span class="line">(&apos;hanmei&apos;, 16000),</span><br><span class="line">(&apos;lucy&apos;, 2400);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>read uncommitted   </li>
+</ul>
+<table align="center">
+    <tr align="center">
+        <td>step</td>
+        <td>Client A</td>
+        <td>Client B</td>
+    </tr>
+    <tr align="center">
+       <td>0</td>
+        <td colspan="2" align="center">set session transaction isolation level read uncommitted;<br>start transaction;</td>
+    </tr>
+    <tr align="center">
+        <td>1</td>
+        <td>update account set balance = balance - 50 where id = 1;</td>
+        <td></td>
+    </tr>
+    <tr align="center">
+        <td>2</td>
+        <td>
+        </td><td align="center">select * from account;</td>
+    </tr>
+    <tr align="center">
+        <td>3</td>
+        <td align="center">rollback;</td>
+        <td>
+    </td></tr>
+    <tr align="center">
+        <td>4</td>
+        <td>
+        </td><td align="center">select * from account;</td>
+    </tr>
+</table>
+
+<p>1.在step2,虽然A端事务还没有提交,但是B还是读到了A修改后的数据:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+----+--------+---------+</span><br><span class="line">| id | name   | balance |</span><br><span class="line">+----+--------+---------+</span><br><span class="line">|  1 | lilei  |     400 |</span><br><span class="line">|  2 | hanmei |   16000 |</span><br><span class="line">|  3 | lucy   |    2400 |</span><br><span class="line">+----+--------+---------+</span><br></pre></td></tr></table></figure>
+
+<p>2.在step3 A回滚事务,那么step4 B读到的就是脏数据.</p>
+<ul>
+<li>read committed   </li>
+</ul>
+<table align="center">
+    <tr align="center">
+        <td>step</td>
+        <td>Client A</td>
+        <td>Client B</td>
+    </tr>
+    <tr align="center">
+       <td>0</td>
+        <td colspan="2" align="center">set session transaction isolation level read committed;<br>start transaction;</td>
+    </tr>
+    <tr align="center">
+        <td>1</td>
+        <td>update account set balance = balance - 50 where id = 1;</td>
+        <td></td>
+    </tr>
+    <tr align="center">
+        <td>2</td>
+        <td>
+        </td><td align="center">select * from account;</td>
+    </tr>
+    <tr align="center">
+        <td>3</td>
+        <td align="center">commit;</td>
+        <td>
+    </td></tr>
+    <tr align="center">
+        <td>4</td>
+        <td>
+        </td><td align="center">select * from account;</td>
+    </tr>
+</table>
+
+<p>1.在step2 A还没有提交事务,所以B此时读到的还是原始数据1,解决了脏读的问题;<br>2.在step3 A提交了事务, 那么step4 B(B的事务还没结束)读到的是A更新后的数据,即B在同个事务中,读到的数据不一致</p>
+<ul>
+<li>repeatable read<table>
+  <tr align="center">
+      <td>step</td>
+      <td>Client A</td>
+      <td>Client B</td>
+  </tr>
+  <tr align="center">
+     <td>0</td>
+      <td colspan="2" align="center">set session transaction isolation level read committed;<br>start transaction;</td>
+  </tr>
+  <tr align="center">
+      <td>1</td>
+      <td>update account set balance = balance - 50 where id = 1;</td>
+      <td></td>
+  </tr>
+  <tr align="center">
+      <td>2</td>
+      <td>
+      </td><td align="center">select * from account;</td>
+  </tr>
+  <tr align="center">
+      <td>3</td>
+      <td align="center">commit;</td>
+      <td>
+  </td></tr>
+  <tr align="center">
+      <td>4</td>
+      <td>
+      </td><td align="center">select * from account;</td>
+  </tr>
+  <tr align="center">
+      <td>5</td>
+      <td></td>
+      <td>update account set balance = balance - 50 where id = 1;</td>
+  </tr>
+  <tr align="center">
+      <td>6</td>
+      <td>
+      </td><td align="center">select * from account;</td>
+  </tr>
+</table>
+
+</li>
+</ul>
+<p>1.无论是在step2还是step4,B查到的数据都是一致的,不会受到A的影响<br>2.step5 B对同一数据进行更新<br>3.step6 B查询更新后的数据,此时会发现数据比step4查到的数据少100<br>4.inndb间隙锁可以防止幻读现象</p>
+<ul>
+<li>serializable</li>
+</ul>
+<table align="center">
+    <tr align="center">
+        <td>step</td>
+        <td>Client A</td>
+        <td>Client B</td>
+    </tr>
+    <tr align="center">
+       <td>0</td>
+        <td colspan="2" align="center">set session transaction isolation level read committed;<br>start transaction;</td>
+    </tr>
+    <tr align="center">
+        <td>1</td>
+        <td>select * from account;</td>
+        <td>update account set balance = balance - 50 where id = 1;</td>
+        <td></td>
+    </tr>
+    <tr align="center">
+        <td>2</td>
+        <td>rollback</td>
+        <td>
+    </td></tr>
+</table>
+
+<p>1.step1 A查询数据还没提交事务时,B对表的写操作都是阻塞的,直至超时或者A事务结束<br>2.事务隔离级别为串行化时，读写数据都会锁住整张表</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/02/事务隔离级别/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-vscode_update" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -243,7 +510,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 nowmore
+    		&copy; 2020 nowmore
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

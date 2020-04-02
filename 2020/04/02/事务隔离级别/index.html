@@ -6,15 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/9 | 四散皮</title>
+  <title>事务隔离级别 | 四散皮</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="四散皮">
-<meta property="og:url" content="http://yoursite.com/archives/2019/09/index.html">
+  <meta name="description" content="事务的基本要素(ACID) 原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。事务执行过程中出错，会回滚到事务开始前的状态，所有的操作就像没有发生一样。也就是说事务是一个不可分割的整体，就像化学中学过的原子，是物质构成的基本单位。  一致性（Consistency）：事务开始前和结束后，数据库的完整性约束没有被破坏 。比如A向B转账，不可能A扣了钱">
+<meta property="og:type" content="article">
+<meta property="og:title" content="事务隔离级别">
+<meta property="og:url" content="http://yoursite.com/2020/04/02/事务隔离级别/index.html">
 <meta property="og:site_name" content="四散皮">
+<meta property="og:description" content="事务的基本要素(ACID) 原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。事务执行过程中出错，会回滚到事务开始前的状态，所有的操作就像没有发生一样。也就是说事务是一个不可分割的整体，就像化学中学过的原子，是物质构成的基本单位。  一致性（Consistency）：事务开始前和结束后，数据库的完整性约束没有被破坏 。比如A向B转账，不可能A扣了钱">
 <meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2020-04-02T14:52:22.786Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="四散皮">
+<meta name="twitter:title" content="事务隔离级别">
+<meta name="twitter:description" content="事务的基本要素(ACID) 原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。事务执行过程中出错，会回滚到事务开始前的状态，所有的操作就像没有发生一样。也就是说事务是一个不可分割的整体，就像化学中学过的原子，是物质构成的基本单位。  一致性（Consistency）：事务开始前和结束后，数据库的完整性约束没有被破坏 。比如A向B转账，不可能A扣了钱">
   
     <link rel="alternative" href="/atom.xml" title="四散皮" type="application/atom+xml">
   
@@ -150,49 +154,360 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="port-事务隔离级别" class="article article-type-port " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/13/vscode_update/" class="archive-article-date">
-  	<time datetime="2019-09-13T11:03:00.733Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-13</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/13/vscode_update/">vscode-linux 自动更新脚本</a>
+    <h1 class="article-title" itemprop="name">
+      事务隔离级别
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
+        
+        <a href="/2020/04/02/事务隔离级别/" class="archive-article-date">
+  	<time datetime="2020-04-02T14:51:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="事务的基本要素-ACID"><a href="#事务的基本要素-ACID" class="headerlink" title="事务的基本要素(ACID)"></a>事务的基本要素(ACID)</h2><ul>
+<li><p>原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。事务执行过程中出错，会回滚到事务开始前的状态，所有的操作就像没有发生一样。也就是说事务是一个不可分割的整体，就像化学中学过的原子，是物质构成的基本单位。</p>
+</li>
+<li><p>一致性（Consistency）：事务开始前和结束后，数据库的完整性约束没有被破坏 。比如A向B转账，不可能A扣了钱，B却没收到。</p>
+</li>
+<li><p>隔离性（Isolation）：同一时间，只允许一个事务请求同一数据，不同的事务之间彼此没有任何干扰。比如A正在从一张银行卡中取钱，在A取钱的过程结束前，B不能向这张卡转账。</p>
+</li>
+<li><p>持久性（Durability）：事务完成后，事务对数据库的所有更新将被保存到数据库，不能回滚。
+　　 
+　　 </p>
+<h2 id="并发带来的问题"><a href="#并发带来的问题" class="headerlink" title="并发带来的问题"></a>并发带来的问题</h2></li>
+<li><p>脏读：一个事务可以读取另一个尚未提交事务的修改数据。</p>
+</li>
+<li><p>不可重复读：在同一个事务中，同一个查询在T1时间读取某一行，在T2时间重新读取这一行时候，这一行的数据已经发生修改，可能被更新了（update），也可能被删除了（delete）。</p>
+</li>
+<li><p>幻读：在同一事务中，同一查询多次进行时候，由于其他<strong>插入操作insert</strong>的事务提交，导致每次返回不同的结果集。</p>
+</li>
+</ul>
+<p>　　小结：不可重复读的和幻读很容易混淆，不可重复读侧重于修改，幻读侧重于新增或删除。解决不可重复读的问题只需锁住满足条件的行，解决幻读需要锁表
+　　</p>
+<h2 id="mysql事务隔离级别"><a href="#mysql事务隔离级别" class="headerlink" title="mysql事务隔离级别"></a>mysql事务隔离级别</h2><table>
+<thead>
+<tr>
+<th align="center">事务隔离级别</th>
+<th align="center">脏读</th>
+<th align="center">不可重复读</th>
+<th align="center">幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">读未提交（read-uncommitted）</td>
+<td align="center">是</td>
+<td align="center">是</td>
+<td align="center">是</td>
+</tr>
+<tr>
+<td align="center">不可重复读（read-committed）</td>
+<td align="center">否</td>
+<td align="center">是</td>
+<td align="center">是</td>
+</tr>
+<tr>
+<td align="center">==可重复读==（repeatable-read）</td>
+<td align="center">否</td>
+<td align="center">否</td>
+<td align="center">是</td>
+</tr>
+<tr>
+<td align="center">串行化（serializable）</td>
+<td align="center">否</td>
+<td align="center">否</td>
+<td align="center">否</td>
+</tr>
+</tbody></table>
+<p>例子:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `account` (</span><br><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `name` varchar(10) NOT NULL,</span><br><span class="line">  `balance` int(11) NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8</span><br><span class="line"></span><br><span class="line">insert into `account`(`name`, `balance`)</span><br><span class="line">values</span><br><span class="line">(&apos;lilei&apos;, 450),</span><br><span class="line">(&apos;hanmei&apos;, 16000),</span><br><span class="line">(&apos;lucy&apos;, 2400);</span><br></pre></td></tr></table></figure>
 
+<ul>
+<li>read uncommitted   </li>
+</ul>
+<table align="center">
+    <tr align="center">
+        <td>step</td>
+        <td>Client A</td>
+        <td>Client B</td>
+    </tr>
+    <tr align="center">
+       <td>0</td>
+        <td colspan="2" align="center">set session transaction isolation level read uncommitted;<br>start transaction;</td>
+    </tr>
+    <tr align="center">
+        <td>1</td>
+        <td>update account set balance = balance - 50 where id = 1;</td>
+        <td></td>
+    </tr>
+    <tr align="center">
+        <td>2</td>
+        <td>
+        </td><td align="center">select * from account;</td>
+    </tr>
+    <tr align="center">
+        <td>3</td>
+        <td align="center">rollback;</td>
+        <td>
+    </td></tr>
+    <tr align="center">
+        <td>4</td>
+        <td>
+        </td><td align="center">select * from account;</td>
+    </tr>
+</table>
+
+<p>1.在step2,虽然A端事务还没有提交,但是B还是读到了A修改后的数据:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+----+--------+---------+</span><br><span class="line">| id | name   | balance |</span><br><span class="line">+----+--------+---------+</span><br><span class="line">|  1 | lilei  |     400 |</span><br><span class="line">|  2 | hanmei |   16000 |</span><br><span class="line">|  3 | lucy   |    2400 |</span><br><span class="line">+----+--------+---------+</span><br></pre></td></tr></table></figure>
+
+<p>2.在step3 A回滚事务,那么step4 B读到的就是脏数据.</p>
+<ul>
+<li>read committed   </li>
+</ul>
+<table align="center">
+    <tr align="center">
+        <td>step</td>
+        <td>Client A</td>
+        <td>Client B</td>
+    </tr>
+    <tr align="center">
+       <td>0</td>
+        <td colspan="2" align="center">set session transaction isolation level read committed;<br>start transaction;</td>
+    </tr>
+    <tr align="center">
+        <td>1</td>
+        <td>update account set balance = balance - 50 where id = 1;</td>
+        <td></td>
+    </tr>
+    <tr align="center">
+        <td>2</td>
+        <td>
+        </td><td align="center">select * from account;</td>
+    </tr>
+    <tr align="center">
+        <td>3</td>
+        <td align="center">commit;</td>
+        <td>
+    </td></tr>
+    <tr align="center">
+        <td>4</td>
+        <td>
+        </td><td align="center">select * from account;</td>
+    </tr>
+</table>
+
+<p>1.在step2 A还没有提交事务,所以B此时读到的还是原始数据1,解决了脏读的问题;<br>2.在step3 A提交了事务, 那么step4 B(B的事务还没结束)读到的是A更新后的数据,即B在同个事务中,读到的数据不一致</p>
+<ul>
+<li>repeatable read<table>
+  <tr align="center">
+      <td>step</td>
+      <td>Client A</td>
+      <td>Client B</td>
+  </tr>
+  <tr align="center">
+     <td>0</td>
+      <td colspan="2" align="center">set session transaction isolation level read committed;<br>start transaction;</td>
+  </tr>
+  <tr align="center">
+      <td>1</td>
+      <td>update account set balance = balance - 50 where id = 1;</td>
+      <td></td>
+  </tr>
+  <tr align="center">
+      <td>2</td>
+      <td>
+      </td><td align="center">select * from account;</td>
+  </tr>
+  <tr align="center">
+      <td>3</td>
+      <td align="center">commit;</td>
+      <td>
+  </td></tr>
+  <tr align="center">
+      <td>4</td>
+      <td>
+      </td><td align="center">select * from account;</td>
+  </tr>
+  <tr align="center">
+      <td>5</td>
+      <td></td>
+      <td>update account set balance = balance - 50 where id = 1;</td>
+  </tr>
+  <tr align="center">
+      <td>6</td>
+      <td>
+      </td><td align="center">select * from account;</td>
+  </tr>
+</table>
+
+</li>
+</ul>
+<p>1.无论是在step2还是step4,B查到的数据都是一致的,不会受到A的影响<br>2.step5 B对同一数据进行更新<br>3.step6 B查询更新后的数据,此时会发现数据比step4查到的数据少100<br>4.inndb间隙锁可以防止幻读现象</p>
+<ul>
+<li>serializable</li>
+</ul>
+<table align="center">
+    <tr align="center">
+        <td>step</td>
+        <td>Client A</td>
+        <td>Client B</td>
+    </tr>
+    <tr align="center">
+       <td>0</td>
+        <td colspan="2" align="center">set session transaction isolation level read committed;<br>start transaction;</td>
+    </tr>
+    <tr align="center">
+        <td>1</td>
+        <td>select * from account;</td>
+        <td>update account set balance = balance - 50 where id = 1;</td>
+        <td></td>
+    </tr>
+    <tr align="center">
+        <td>2</td>
+        <td>rollback</td>
+        <td>
+    </td></tr>
+</table>
+
+<p>1.step1 A查询数据还没提交事务时,B对表的写操作都是阻塞的,直至超时或者A事务结束<br>2.事务隔离级别为串行化时，读写数据都会锁住整张表</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/04/02/事务隔离级别/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/09/13/vscode_update/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">vscode-linux 自动更新脚本</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -215,8 +530,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
